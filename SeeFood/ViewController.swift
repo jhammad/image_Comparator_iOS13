@@ -47,14 +47,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         // Create a request for the Vision framework using the Core ML model
         let request = VNCoreMLRequest(model: model) { (request, error) in
             // Completion block: This is executed after the request is processed
-            // Ensure that the results can be cast to an array of VNContoursObservation
-            guard let results = request.results as? [VNContoursObservation] else {
+            // Ensure that the results can be cast to an array of VNClassificationObservation
+            guard let results = request.results as? [VNClassificationObservation] else {
                 // If casting fails, print an error message and terminate the app
                 fatalError("Could not extract results from the request for processing")
             }
-            // Print the detected contours (results) to the console
-            print(results)
+            // new variable with the first value of the results
+            if let firstResult = results.first {
+                //if the firstResult has on its identifier container the term hotdog
+                if firstResult.identifier.contains("hotdog") {
+                    // change the title to Hotdog
+                    self.navigationItem.title = "Hotdog!"
+                }
+                else {
+                    // if not not hotdog
+                    self.navigationItem.title = "Not Hotdog!"
+                }
+            }
         }
+        
         // Create an image request handler for processing the CIImage
         let handler = VNImageRequestHandler(ciImage: image)
         do {
